@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rui-sky — 个人主页</title>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <style>
+    /* ========== 全局重置 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ========== 主体：纯黄色背景 + 黑色方块 ========== */
+    body {
+      /* 奶油白底色 */
+      background-color: #FFF8E7;
+
+      /* 背景图案移到 .frame 边框容器中，body 只保留奶油白外圈 */
+
+      /* 文字用深色，黄色底上才看得清 */
+      color: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ========== 装饰边框容器 ========== */
+    .frame {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      border: 4px solid #000;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* 边框内部的图案区域：3行6列均匀排布 */
+    .frame-inner {
+      position: absolute;
+      top: 60px;
+      left: 60px;
+      right: 60px;
+      bottom: 60px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 10px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    /* 每个四方块组合容器 */
+    .combo {
+      position: relative;
+      width: 52%;
+      aspect-ratio: 1 / 1;
+    }
+
+    /* 组合内的粉色方块 */
+    .combo-block {
+      position: absolute;
+      width: 33.333%;
+      height: 33.333%;
+      background: #FF69B4;
+    }
+    /* 上中（第一排中间） */
+    .combo-block:nth-child(1) { top: 0; left: 33.333%; }
+    /* 中中（第二排中间） */
+    .combo-block:nth-child(2) { top: 33.333%; left: 33.333%; }
+    /* 左下（第三排左下） */
+    .combo-block:nth-child(3) { top: 66.666%; left: 0; }
+    /* 右下（第三排右下） */
+    .combo-block:nth-child(4) { top: 66.666%; left: 66.666%; }
+
+    /* ========== 猫咪边框装饰 ========== */
+    /* 猫耳朵 */
+    .cat-ear {
+      position: absolute;
+      top: -20px;
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-bottom: 28px solid #000;
+      z-index: 2;
+    }
+    .cat-ear.left { left: 50px; transform: rotate(-12deg); }
+    .cat-ear.right { right: 50px; transform: rotate(12deg); }
+    .cat-ear::after {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: -9px;
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 14px solid #FFB6C1;
+    }
+
+    /* 猫爪印 */
+    .paw {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      z-index: 2;
+      opacity: 0.6;
+    }
+    .paw::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 11px;
+      background: #000;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+    .paw::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background:
+        radial-gradient(circle at 20% 80%, #000 3px, transparent 3px),
+        radial-gradient(circle at 50% 60%, #000 3px, transparent 3px),
+        radial-gradient(circle at 80% 80%, #000 3px, transparent 3px);
+    }
+    .paw-tl { top: 12px; left: 12px; transform: rotate(-30deg); }
+    .paw-tr { top: 12px; right: 12px; transform: rotate(30deg); }
+    .paw-bl { bottom: 12px; left: 12px; transform: rotate(-150deg); }
+    .paw-br { bottom: 12px; right: 12px; transform: rotate(150deg); }
+
+    /* ========== 装饰图案：星星爱心花朵 ========== */
+    .deco {
+      position: fixed;
+      z-index: 1;
+      pointer-events: none;
+      user-select: none;
+      animation: decoFloat 3s ease-in-out infinite;
+    }
+    @keyframes decoFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+      50% { transform: translateY(-8px) rotate(10deg); opacity: 1; }
+    }
+    @keyframes decoTwinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .star { color: #FFB347; animation: decoTwinkle 2.5s ease-in-out infinite; }
+    .heart { color: #FF69B4; animation: decoFloat 3.5s ease-in-out infinite; }
+    .flower { color: #FF8FA3; animation: decoFloat 4s ease-in-out infinite; }
+
+    /* 各装饰位置和大小 */
+    .s1 { top: 12%; left: 8%; font-size: 1.4rem; animation-delay: 0s; }
+    .s2 { top: 25%; right: 10%; font-size: 1.1rem; animation-delay: 0.5s; }
+    .s3 { top: 55%; left: 6%; font-size: 1rem; animation-delay: 1s; }
+    .s4 { top: 70%; right: 8%; font-size: 1.3rem; animation-delay: 1.5s; }
+    .s5 { top: 40%; right: 5%; font-size: 0.9rem; animation-delay: 0.8s; }
+    .h1 { top: 18%; right: 18%; font-size: 1.2rem; animation-delay: 0.3s; }
+    .h2 { top: 60%; left: 12%; font-size: 1rem; animation-delay: 1.2s; }
+    .h3 { top: 80%; right: 15%; font-size: 1.1rem; animation-delay: 0.7s; }
+    .f1 { top: 35%; left: 4%; font-size: 1.2rem; animation-delay: 0.9s; }
+    .f2 { top: 75%; left: 10%; font-size: 1rem; animation-delay: 1.4s; }
+
+    /* 粒子喷发画布 */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ========== 导航栏 ========== */
+    nav {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      right: 28px;
+      padding: 16px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 248, 231, 0.92);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      color: #000;
+    }
+
+    .nav-links a {
+      color: #1a1a1a;
+      text-decoration: none;
+      margin-left: 30px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #000;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* ========== 首屏 Hero ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 12%;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', Courier, monospace;
+      color: #000;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -3px;
+      color: #000;
+      line-height: 1;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 0.9em;
+      background: #000;
+      margin-left: 8px;
+      animation: blink 1s step-end infinite;
+      vertical-align: baseline;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: #333;
+      margin-top: 25px;
+      max-width: 600px;
+    }
+
+    .hero-welcome {
+      font-family: 'Courier New', Courier, monospace;
+      color: #000;
+      margin-top: 15px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .hero-buttons {
+      margin-top: 40px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px solid #000;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #000;
+      color: #FFD700;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: #000;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #000;
+    }
+
+    .btn-outline:hover {
+      background: #000;
+      color: #FFD700;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      color: #000;
+      letter-spacing: 2px;
+    }
+
+    .scroll-line {
+      width: 2px;
+      height: 40px;
+      background: #000;
+      margin: 10px auto 0;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.4; transform: scaleY(0.6); }
+    }
+
+    /* ========== 通用区块 ========== */
+    section {
+      padding: 100px 12%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Courier New', Courier, monospace;
+      color: #000;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    .section-label::after {
+      content: '';
+      display: inline-block;
+      width: 60px;
+      height: 2px;
+      background: #000;
+      margin-left: 15px;
+      vertical-align: middle;
+    }
+
+    section h2 {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 900;
+      color: #000;
+      margin-bottom: 25px;
+      letter-spacing: -1px;
+    }
+
+    .section-desc {
+      color: #333;
+      font-size: 1.05rem;
+      max-width: 650px;
+    }
+
+    /* ========== 关于我 ========== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 50px;
+      align-items: start;
+      margin-top: 40px;
+    }
+
+    .about-text p {
+      color: #333;
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+    }
+
+    .profile-card {
+      background: rgba(0, 0, 0, 0.05);
+      border: 2px solid #000;
+      border-radius: 0;
+      padding: 25px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .profile-card-title {
+      font-size: 0.85rem;
+      color: #000;
+      font-weight: 700;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #000;
+    }
+
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+      font-size: 0.9rem;
+    }
+
+    .profile-row:last-child {
+      border-bottom: none;
+    }
+
+    .profile-key {
+      color: #555;
+    }
+
+    .profile-value {
+      color: #000;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #000;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* 微信收款码卡片 */
+    .qr-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+    }
+    .qr-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ========== 关注领域卡片 ========== */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 45px;
+    }
+
+    .field-card {
+      background: rgba(0, 0, 0, 0.03);
+      border: 2px solid #000;
+      padding: 30px;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .field-card:hover {
+      background: #000;
+      color: #FFD700;
+      transform: translate(-4px, -4px);
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .field-card:hover .field-num,
+    .field-card:hover .field-card p {
+      color: #FFD700;
+    }
+
+    .field-num {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #000;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .field-card h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #000;
+    }
+
+    .field-card:hover h3 {
+      color: #FFD700;
+    }
+
+    .field-card p {
+      color: #444;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ========== 作品列表 ========== */
+    .works-list {
+      margin-top: 45px;
+      border-top: 2px solid #000;
+    }
+
+    .work-item {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 25px;
+      align-items: center;
+      padding: 30px 0;
+      border-bottom: 2px solid #000;
+      transition: all 0.3s;
+    }
+
+    .work-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .work-num {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      color: #000;
+      font-size: 1rem;
+    }
+
+    .work-info h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #000;
+      margin-bottom: 8px;
+    }
+
+    .work-info p {
+      color: #444;
+      font-size: 0.95rem;
+    }
+
+    .work-tag {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 14px;
+      border: 2px solid #000;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .work-tag.online {
+      background: #000;
+      color: #FFD700;
+    }
+
+    .works-note {
+      margin-top: 25px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    /* ========== 联系区域 ========== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 45px;
+    }
+
+    .contact-card {
+      background: rgba(0, 0, 0, 0.03);
+      border: 2px solid #000;
+      padding: 25px;
+      transition: all 0.3s;
+    }
+
+    .contact-card:hover {
+      background: #000;
+    }
+
+    .contact-card:hover .contact-label,
+    .contact-card:hover .contact-value {
+      color: #FFD700;
+    }
+
+    .contact-label {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      color: #555;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .contact-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #000;
+      word-break: break-all;
+    }
+
+    .contact-value a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .contact-value a:hover {
+      text-decoration: underline;
+    }
+
+    /* ========== 页脚 ========== */
+    footer {
+      text-align: center;
+      padding: 40px 10%;
+      border-top: 2px solid #000;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #000;
+    }
+
+    footer p {
+      margin-bottom: 8px;
+    }
+
+    /* ========== 左下角角色 + 猫咪气泡 ========== */
+    .corner-character {
+      position: fixed;
+      left: 32px;
+      bottom: 32px;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .corner-character img {
+      width: 190px;
+      height: auto;
+      display: block;
+    }
+
+    /* 猫咪对话气泡 */
+    .cat-bubble {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #FF69B4;
+      border-radius: 22px;
+      padding: 14px 24px;
+      margin-left: 30px;
+      margin-bottom: 6px;
+      display: inline-block;
+      box-shadow: 3px 3px 0 rgba(255, 105, 180, 0.3);
+    }
+
+    /* 左猫耳 */
+    .cat-bubble::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 18px;
+      width: 0;
+      height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-bottom: 17px solid #FF69B4;
+    }
+    /* 右猫耳 */
+    .cat-bubble::after {
+      content: '';
+      position: absolute;
+      top: -14px;
+      right: 18px;
+      width: 0;
+      height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-bottom: 17px solid #FF69B4;
+    }
+
+    /* 内耳（粉色） */
+    .cat-ear-inner {
+      position: absolute;
+      top: -8px;
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 9px solid #FFB6C1;
+      z-index: 1;
+    }
+    .cat-ear-inner.left { left: 24px; }
+    .cat-ear-inner.right { right: 24px; }
+
+    /* 气泡文字 - 萌妹体 */
+    .cat-bubble-text {
+      font-family: 'ZCOOL KuaiLe', 'Microsoft YaHei', sans-serif;
+      font-size: 1.15rem;
+      color: #FF1493;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    /* 气泡尾巴（指向角色） */
+    .bubble-tail {
+      position: absolute;
+      bottom: -12px;
+      left: 35px;
+      width: 0;
+      height: 0;
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 14px solid #ffffff;
+    }
+    .bubble-tail-border {
+      position: absolute;
+      bottom: -16px;
+      left: 33px;
+      width: 0;
+      height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-top: 16px solid #FF69B4;
+    }
+
+    /* ========== 响应式适配 ========== */
+    @media (max-width: 768px) {
+      .frame {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        border-width: 3px;
+      }
+      .frame-inner {
+        top: 34px;
+        left: 34px;
+        right: 34px;
+        bottom: 34px;
+        gap: 6px;
+      }
+      .combo {
+        width: 62%;
+      }
+      .corner-character {
+        left: 12px;
+        bottom: 20px;
+      }
+      .corner-character img {
+        width: 120px;
+      }
+      .cat-bubble {
+        padding: 8px 14px;
+        margin-left: 15px;
+      }
+      .cat-bubble-text {
+        font-size: 0.85rem;
+      }
+      .cat-ear {
+        top: -14px;
+        border-left-width: 12px;
+        border-right-width: 12px;
+        border-bottom-width: 18px;
+      }
+      .cat-ear.left { left: 20px; }
+      .cat-ear.right { right: 20px; }
+      .cat-ear::after {
+        top: 6px;
+        left: -6px;
+        border-left-width: 6px;
+        border-right-width: 6px;
+        border-bottom-width: 9px;
+      }
+      .paw { width: 16px; height: 16px; }
+      .deco { display: none; }
+
+      nav {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        padding: 12px 5%;
+      }
+
+      .nav-links a {
+        margin-left: 12px;
+        font-size: 0.8rem;
+      }
+
+      .hero, section {
+        padding: 80px 8%;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .work-item {
+        grid-template-columns: 40px 1fr;
+        gap: 15px;
+      }
+
+      .work-tag {
+        grid-column: 2;
+        justify-self: start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 猫咪装饰边框 -->
+  <div class="frame">
+    <div class="cat-ear left"></div>
+    <div class="cat-ear right"></div>
+    <div class="paw paw-tl"></div>
+    <div class="paw paw-tr"></div>
+    <div class="paw paw-bl"></div>
+    <div class="paw paw-br"></div>
+    <div class="frame-inner"></div>
+  </div>
+
+  <!-- 装饰图案：星星爱心 -->
+  <div class="deco star s1">✦</div>
+  <div class="deco star s2">★</div>
+  <div class="deco star s3">✧</div>
+  <div class="deco star s4">✦</div>
+  <div class="deco star s5">★</div>
+  <div class="deco heart h1">♡</div>
+  <div class="deco heart h2">♥</div>
+  <div class="deco heart h3">♡</div>
+  <div class="deco flower f1">✿</div>
+  <div class="deco flower f2">❀</div>
+
+  <!-- 粒子喷发画布 -->
+  <canvas id="particles"></canvas>
+
+  <!-- 左下角角色 + 猫咪气泡 -->
+  <div class="corner-character">
+    <div class="cat-bubble">
+      <span class="cat-ear-inner left"></span>
+      <span class="cat-ear-inner right"></span>
+      <span class="cat-bubble-text">我的好大儿atouop</span>
+      <span class="bubble-tail-border"></span>
+      <span class="bubble-tail"></span>
+    </div>
+    <img src="https://aka.doubaocdn.com/s/z2UDWmuc70" alt="atouop">
+  </div>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav>
+    <div class="nav-logo">RUI-SKY</div>
+    <div class="nav-links">
+      <a href="#home">首页</a>
+      <a href="#about">关于</a>
+      <a href="#fields">领域</a>
+      <a href="#contact">联系</a>
+    </div>
+  </nav>
+
+  <!-- ========== 首屏 ========== -->
+  <section class="hero" id="home">
+    <h1>RUI-SKY<span class="cursor"></span></h1>
+    <p class="hero-subtitle">这里是我的个人主页</p>
+    <p class="hero-welcome">&gt; welcome to my corner of the web</p>
+    <div class="hero-buttons">
+      <a href="#about" class="btn btn-primary">关于我 ↓</a>
+    </div>
+    <div class="scroll-hint">
+      SCROLL
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ========== 关于我 ========== -->
+  <section id="about">
+    <div class="section-label">01 · ABOUT / 关于我</div>
+    <h2>你好，我是 Rui-sky</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>其实我是秦始皇，我并没有死，我在西安有1吨的黄金，我现在只需要500人民币，打车去西安。</p>
+        <p>你微信转我就可以，转过来之后明天我直接带兵打过去，让你统领三军。</p>
+        <p>编不下去了，你直接V我50，请我吃KFC吧 🙏</p>
+      </div>
+      <div class="qr-card">
+        <img src="https://aka.doubaocdn.com/s/d2LXJDiOyE" alt="微信收款码">
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 关注领域 ========== -->
+  <section id="fields">
+    <div class="section-label">02 · FIELDS / 关注领域</div>
+    <h2>我在做什么</h2>
+    <div class="card-grid">
+      <div class="field-card">
+        <div class="field-num">01</div>
+        <h3>玩mc</h3>
+      </div>
+      <div class="field-card">
+        <div class="field-num">02</div>
+        <h3>还是玩mc</h3>
+      </div>
+      <div class="field-card">
+        <div class="field-num">03</div>
+        <h3>依旧玩mc</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- 作品集已删除 -->
+  <section id="works" style="display:none">
+    <div class="section-label">03 · WORKS / 作品集</div>
+    <h2>我的作品</h2>
+    <p class="section-desc">做过的一些东西，持续更新中。</p>
+    <div class="works-list">
+      <div class="work-item">
+        <div class="work-num">01</div>
+        <div class="work-info">
+          <h3>Rui-sky 个人主页</h3>
+          <p>就是你正在看的这个页面。黄色主题，黑黄配色，一个安静的数字角落。</p>
+        </div>
+        <div class="work-tag online">ONLINE</div>
+      </div>
+      <div class="work-item">
+        <div class="work-num">02</div>
+        <div class="work-info">
+          <h3>项目占位 01</h3>
+          <p>这里将展示你的下一个作品：一段介绍、一个链接，或一张截图。</p>
+        </div>
+        <div class="work-tag">待补充</div>
+      </div>
+      <div class="work-item">
+        <div class="work-num">03</div>
+        <div class="work-info">
+          <h3>项目占位 02</h3>
+          <p>这里将展示你的再下一个作品：一段介绍、一个链接，或一张截图。</p>
+        </div>
+        <div class="work-tag">待补充</div>
+      </div>
+    </div>
+    <p class="works-note">// 以上为示例占位，把真实作品告诉我，我来替换。</p>
+  </section>
+
+  <!-- ========== 联系 ========== -->
+  <section id="contact">
+    <div class="section-label">03 · CONTACT / 联系</div>
+    <h2>Say hi.</h2>
+    <p class="section-desc">想聊聊想法、合作，或者只是打个招呼？欢迎通过下面任意方式找到我，我会认真回复每一条消息。</p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-label">Email</div>
+        <div class="contact-value"><a href="mailto:2080202407@qq.com">2080202407@qq.com</a></div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-label">GitHub</div>
+        <div class="contact-value"><a href="https://github.com/Rui-sky" target="_blank">github.com/Rui-sky</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer>
+    <p>© 2026 Rui-sky · Built with HTML & CSS</p>
+    <p>Hosted on GitHub Pages</p>
+  </footer>
+
+  <script>
+    // ========== 生成 3行×6列 共18个四方块组合 ==========
+    const frameInner = document.querySelector('.frame-inner');
+    for (let i = 0; i < 18; i++) {
+      const combo = document.createElement('div');
+      combo.className = 'combo';
+      // 隐藏：三排每排第3、4个(索引2,3 / 8,9 / 14,15) + 左下角(索引12)
+      if (i === 2 || i === 3 || i === 8 || i === 9 || i === 12 || i === 14 || i === 15) combo.style.visibility = 'hidden';
+      for (let j = 0; j < 4; j++) {
+        const block = document.createElement('div');
+        block.className = 'combo-block';
+        combo.appendChild(block);
+      }
+      frameInner.appendChild(combo);
+    }
+
+    // ========== 白色粒子喷发效果 ==========
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    let emitters = [];
+
+    // 根据每个组合的实际位置，计算喷发点（最上面方块的顶部中心）
+    function updateEmitters() {
+      emitters = [];
+      document.querySelectorAll('.combo').forEach(combo => {
+        if (combo.style.visibility === 'hidden') return; // 被隐藏的位置不喷发粒子
+        const rect = combo.getBoundingClientRect();
+        emitters.push({
+          x: rect.left + rect.width / 2,
+          y: rect.top
+        });
+      });
+    }
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      updateEmitters();
+    }
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x + (Math.random() - 0.5) * 6;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 2.5;
+        this.vy = -(Math.random() * 4.5 + 3);
+        this.life = 1;
+        this.decay = Math.random() * 0.015 + 0.008;
+        this.size = Math.random() * 3 + 1.8;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.04;
+        this.vx *= 0.99;
+        this.life -= this.decay;
+      }
+      draw() {
+        ctx.globalAlpha = Math.max(0, this.life);
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      emitters.forEach(e => {
+        if (Math.random() < 0.65) {
+          particles.push(new Particle(e.x, e.y));
+        }
+      });
+
+      particles = particles.filter(p => p.life > 0);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    // 等布局渲染完成后再计算喷发点
+    setTimeout(resize, 50);
+    animate();
+  </script>
+
+</body>
+</html>
